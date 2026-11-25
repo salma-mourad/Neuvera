@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+<section class="hero" id="accueil">
+  <h1>Bienvenue sur <span class="accent">NEUVERA</span> !</h1>
+  <p class="tagline">DECODING MINDS, ONE WAVE AT A TIME</p>
+  <div class="card">
+    Neuvera est une plateforme qui utilise l'intelligence artificielle pour analyser des enregistrements EEG.
+    Conçue pour les professionnels de santé et les chercheurs, elle aide à repérer des profils compatibles
+    avec une schizophrénie, à partir de deux modèles complémentaires.
+  </div>
+  {% if current_user.is_authenticated %}
+    <a class="button" href="{{ url_for('dashboard.index') }}">ACCÉDER AU TABLEAU DE BORD</a>
+  {% else %}
+    <a class="button" href="{{ url_for('auth.register') }}">COMMENCER MAINTENANT</a>
+  {% endif %}
+</section>
+
+<section class="public-section" id="fonctionnalites">
+  <div class="section-title"><h1>Fonctionnalités de <span class="accent">Neuvera</span></h1></div>
+  <div class="features">
+    <div class="card"><h3>Analyse EEG</h3><p>Prétraitement du signal et analyse de l'enregistrement complet, époque par époque.</p></div>
+    <div class="card"><h3>Deux modèles d'IA</h3><p>Une régression logistique et un réseau convolutif 1D, combinés dans un seul résultat.</p></div>
+    <div class="card"><h3>Dossiers patients</h3><p>Suivi des patients, de leur contexte clinique et de l'historique de leurs analyses.</p></div>
+    <div class="card"><h3>Rapports détaillés</h3><p>Rapport clair pour chaque analyse, exportable en PDF.</p></div>
+  </div>
+</section>
+
+<section class="public-section about" id="a-propos">
+  <div class="section-title"><h1>À propos de <span class="accent">Neuvera</span></h1></div>
+  <div class="card">
+    <h3>Notre vision</h3>
+    <p>Rendre l'analyse EEG assistée par l'IA plus accessible aux acteurs de la santé et de la recherche.</p>
+  </div>
+  <div class="card">
+    <h3>Ce que fait la plateforme</h3>
+    <p>Importer un enregistrement EEG, obtenir une analyse par deux modèles d'IA et consulter un rapport par patient.</p>
+  </div>
+  <div class="card">
+    <h3>Nos limites</h3>
+    <p>Les modèles ont été entraînés et évalués sur 28 sujets. Neuvera est un outil de recherche et ne remplace pas un diagnostic médical.</p>
+  </div>
+</section>
+{% endblock %}

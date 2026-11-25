@@ -1,0 +1,5 @@
+# Outils de développement (notebooks, graphiques, tests)
+-r requirements.txt
+matplotlib
+ipykernel
+pytest

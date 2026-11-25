@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle analyse{% endblock %}
+{% block content %}
+<div class="narrow">
+  <div class="section-title">
+    <h1>Nouvelle analyse pour le patient<br><span class="accent">{{ patient.full_name }}</span></h1>
+  </div>
+  <section class="card">
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <fieldset>
+        <legend>Examen neurologique ciblé schizophrénie</legend>
+        <label>Niveau de suspicion :
+          <select name="suspicion_level" required>
+            <option value="">-- Sélectionner --</option>
+            {% for level in levels %}<option>{{ level }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Antécédents familiaux :
+          <select name="family_history">
+            <option value="non">Non</option>
+            <option value="oui">Oui</option>
+          </select>
+        </label>
+        <label>Symptômes observés :
+          <textarea name="symptoms" rows="3" placeholder="Hallucinations, délires, troubles de la pensée…"></textarea>
+        </label>
+        <label>Notes : <textarea name="notes" rows="3"></textarea></label>
+      </fieldset>
+      <fieldset>
+        <legend>Enregistrement EEG</legend>
+        <label>Fichier .edf (19 électrodes, 250 Hz) :
+          <input type="file" name="eeg_file" accept=".edf" required>
+        </label>
+      </fieldset>
+      <button type="submit" class="gradient">Lancer l'analyse</button>
+      <p class="muted">L'analyse prend quelques secondes.</p>
+    </form>
+  </section>
+</div>
+{% endblock %}

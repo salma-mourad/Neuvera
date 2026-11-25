@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Neuvera{% endblock %} · Neuvera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% set endpoint = request.endpoint or '' %}
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('dashboard.index') if current_user.is_authenticated else url_for('public.home') }}">
+           <img src="{{ url_for('static', filename='img/logo.png') }}" alt="">
+      Neuvera
+    </a>
+    <nav>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard.index') }}" class="{{ 'active' if endpoint.startswith('dashboard') }}">Accueil</a>
+        <a href="{{ url_for('patients.list_patients') }}" class="{{ 'active' if endpoint.startswith(('patients', 'analysis')) }}">Patients</a>
+        <form method="post" action="{{ url_for('auth.logout') }}" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="link">Déconnexion</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('public.home') }}#accueil">Accueil</a>
+        <a href="{{ url_for('public.home') }}#fonctionnalites">Fonctionnalités</a>
+        <a href="{{ url_for('public.home') }}#a-propos">À propos</a>
+        <a href="{{ url_for('auth.login') }}" class="pill">Connexion</a>
+        <a href="{{ url_for('auth.register') }}" class="pill filled">S'inscrire</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="container">
+    {% block flashes %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+    {% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Outil de recherche, pas un dispositif médical. Les résultats ne remplacent pas un avis clinique.
+  </footer>
+</body>
+</html>

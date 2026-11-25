@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<h1>Bonjour, <span class="accent">{{ current_user.name }}</span> !</h1>
+
+<section class="card last-analysis">
+  <span class="label-pill">Dernière analyse</span>
+  {% if recent %}
+    {% set last = recent[0] %}
+    <div class="meta">
+      <span><strong>Patient :</strong> {{ last.recording.patient.full_name }}</span>
+      <span><strong>Date :</strong> {{ last.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+      <span><strong>Âge :</strong> {{ last.recording.patient.age }}</span>
+      <span><strong>Sexe :</strong> {{ last.recording.patient.sex }}</span>
+    </div>
+    <span class="badge {{ 'pos' if last.label == 1 else 'neg' }}">{{ last.label_text }}</span>
+    <p><a class="button outline" href="{{ url_for('analysis.report', recording_id=last.recording_id) }}">Voir le rapport</a></p>
+  {% else %}
+    <p class="muted">Aucune analyse pour l'instant.</p>
+  {% endif %}
+</section>
+
+<div class="stats">
+  <div class="card stat"><span class="label-pill">Total d'analyses</span><span class="value">{{ stats.analyses }}</span></div>
+  <div class="card stat"><span class="label-pill">Profils positifs</span><span class="value">{{ stats.positifs }}</span></div>
+  <div class="card stat"><span class="label-pill">Total de patients</span><span class="value">{{ stats.patients }}</span></div>
+</div>
+
+{% if recent|length > 1 %}
+<section class="card">
+  <h2>Analyses récentes</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Patient</th><th>Fichier</th><th>Résultat</th><th></th></tr></thead>
+    <tbody>
+    {% for r in recent %}
+      <tr>
+        <td>{{ r.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ r.recording.patient.full_name }}</td>
+        <td>{{ r.recording.original_name }}</td>
+        <td><span class="badge {{ 'pos' if r.label == 1 else 'neg' }}">{{ r.label_text }}</span></td>
+        <td><a href="{{ url_for('analysis.report', recording_id=r.recording_id) }}">Voir</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<a class="button wide" href="{{ url_for('patients.list_patients') }}">Démarrer une nouvelle analyse</a>
+{% endblock %}

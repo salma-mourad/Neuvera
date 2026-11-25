@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Patients{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>Vos patients !</h1>
+  <a class="button round" href="{{ url_for('patients.new_patient') }}" title="Ajouter un patient" aria-label="Ajouter un patient">+</a>
+</div>
+<section class="card">
+  {% if patients %}
+    <table>
+      <thead><tr><th>ID</th><th>Nom</th><th>Date de naissance</th><th>Sexe</th><th>Analyses</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for p in patients %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.full_name }}</td>
+          <td>{{ p.birth_date.strftime('%d/%m/%Y') }}</td>
+          <td>{{ p.sex }}</td>
+          <td>{{ p.recordings|length }}</td>
+          <td><a class="button outline" href="{{ url_for('patients.detail', patient_id=p.id) }}">Ouvrir</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">Aucun patient. Cliquez sur « + » pour en ajouter un.</p>
+  {% endif %}
+</section>
+{% endblock %}

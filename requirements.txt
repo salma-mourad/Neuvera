@@ -1,0 +1,15 @@
+# Traitement EEG et machine learning
+mne
+numpy
+scipy
+scikit-learn
+joblib
+tensorflow
+
+# Application web
+flask
+flask-sqlalchemy
+flask-login
+flask-wtf
+python-dotenv
+psycopg[binary]

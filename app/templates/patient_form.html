@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Nouveau patient{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Nouveau patient</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Prénom <input type="text" name="first_name" required></label>
+    <label>Nom <input type="text" name="last_name" required></label>
+    <label>Date de naissance <input type="date" name="birth_date" required></label>
+    <label>Sexe
+      <select name="sex" required>
+        <option value="">Choisir</option>
+        <option value="F">Femme</option>
+        <option value="M">Homme</option>
+      </select>
+    </label>
+    <button type="submit">Enregistrer</button>
+  </form>
+</section>
+{% endblock %}

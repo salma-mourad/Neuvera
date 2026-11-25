@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ patient.full_name }}{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>Dossier du patient : <span class="accent">{{ patient.full_name }}</span></h1>
+  <a class="button outline" href="{{ url_for('patients.list_patients') }}">← Retour à la liste</a>
+</div>
+
+<section class="card">
+  <h2 class="accent">Informations personnelles</h2>
+  <table class="details">
+    <tr><th>ID</th><td>{{ patient.id }}</td></tr>
+    <tr><th>Nom</th><td>{{ patient.full_name }}</td></tr>
+    <tr><th>Date de naissance</th><td>{{ patient.birth_date.strftime('%d/%m/%Y') }} ({{ patient.age }} ans)</td></tr>
+    <tr><th>Sexe</th><td>{{ 'Femme' if patient.sex == 'F' else 'Homme' }}</td></tr>
+    <tr><th>Créé le</th><td>{{ patient.created_at.strftime('%d/%m/%Y à %H:%M') }}</td></tr>
+  </table>
+</section>
+
+<div class="row">
+  <h2 class="accent">Analyses du patient</h2>
+  <a class="button round" href="{{ url_for('analysis.upload', patient_id=patient.id) }}" title="Nouvelle analyse EEG" aria-label="Nouvelle analyse EEG">+</a>
+</div>
+<section class="card">
+  {% if patient.recordings %}
+    <table>
+      <thead><tr><th>Date</th><th>Fichier</th><th>Suspicion</th><th>Résultat</th><th></th></tr></thead>
+      <tbody>
+      {% for rec in patient.recordings %}
+        <tr>
+          <td>{{ rec.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td>{{ rec.original_name }}</td>
+          <td>{{ rec.suspicion_level }}</td>
+          <td><span class="badge {{ 'pos' if rec.report.label == 1 else 'neg' }}">{{ rec.report.label_text }}</span></td>
+          <td><a href="{{ url_for('analysis.report', recording_id=rec.id) }}">Rapport</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">Aucune analyse. Cliquez sur « + » pour déposer un fichier EEG.</p>
+  {% endif %}
+</section>
+
+<form method="post" action="{{ url_for('patients.delete', patient_id=patient.id) }}"
+      onsubmit="return confirm('Supprimer ce patient et toutes ses analyses ?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button type="submit" class="danger">Supprimer le patient</button>
+</form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Rapport d'analyse{% endblock %}
+{% block content %}
+{% set patient = recording.patient %}
+<div class="row no-print">
+  <a class="button outline" href="{{ url_for('patients.detail', patient_id=patient.id) }}">← Retour au patient</a>
+  <button type="button" onclick="window.print()">Exporter en PDF</button>
+</div>
+
+<section class="card result {{ 'pos' if report.label == 1 else 'neg' }}">
+  <span class="label-pill">Résultat</span>
+  <strong>{{ report.label_text }}</strong>
+  <span>Probabilité combinée : {{ '%.0f' % (report.proba_final * 100) }} %</span>
+</section>
+
+<section class="card">
+  <div class="section-title"><h2>Analyse EEG par IA</h2></div>
+  <table class="details">
+    <tr><th>Régression logistique</th><td>{{ '%.0f' % (report.proba_logistic * 100) }} %</td></tr>
+    <tr><th>CNN 1D</th><td>{{ ('%.0f %%' % (report.proba_cnn * 100)) if report.proba_cnn is not none else 'non disponible' }}</td></tr>
+    <tr><th>Probabilité combinée</th><td>{{ '%.0f' % (report.proba_final * 100) }} %</td></tr>
+    <tr><th>Époques analysées</th><td>{{ report.n_epochs }} × 25 s</td></tr>
+    <tr><th>Date de l'analyse</th><td>{{ report.created_at.strftime('%d/%m/%Y à %H:%M') }}</td></tr>
+  </table>
+</section>
+
+<section class="card">
+  <div class="section-title"><h2>Examen clinique</h2></div>
+  <table class="details">
+    <tr><th>Patient</th><td>{{ patient.full_name }}, {{ patient.age }} ans, {{ 'Femme' if patient.sex == 'F' else 'Homme' }}</td></tr>
+    <tr><th>Fichier</th><td>{{ recording.original_name }}</td></tr>
+    <tr><th>Niveau de suspicion</th><td>{{ recording.suspicion_level }}</td></tr>
+    <tr><th>Antécédents familiaux</th><td>{{ 'Oui' if recording.family_history else 'Non' }}</td></tr>
+    <tr><th>Symptômes observés</th><td>{{ recording.symptoms or '—' }}</td></tr>
+    <tr><th>Notes</th><td>{{ recording.notes or '—' }}</td></tr>
+  </table>
+</section>
+
+<p class="muted">
+  Les modèles ont été évalués sur 28 sujets seulement (validation par sujet) : leur fiabilité est limitée.
+  Ce rapport est une aide à la recherche et ne constitue pas un diagnostic.
+</p>
+{% endblock %}
